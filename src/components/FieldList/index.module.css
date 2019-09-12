@@ -1,17 +1,36 @@
 .list{
     list-style: none;
     display: flex;
-    width: 300px;
+    width: 400px;
     flex-wrap: wrap;
     border: 2px solid #EDEDF0;
     border-top: none;
     border-left: none;
 }
-.item{
-    border: 2px solid #EDEDF0;
+.initialItem{
     flex-basis: 20%;
 }
 .item{
     border-right: 0;
     border-bottom: 0;
+    border: 2px solid #EDEDF0;
 }
+
+.item_basis_5{
+    flex-basis: 20%;
+    border-right: 0;
+    border-bottom: 0;
+}
+
+.item_basis_10{
+    flex-basis: 10%;
+    border-right: 0;
+    border-bottom: 0;
+}
+
+.item_basis_15{
+    border-right: 0;
+    border-bottom: 0;
+    flex-basis: 6.6666666666666666666666666%;
+}
+
