@@ -1,10 +1,8 @@
-import React, { Component } from "react";
+import React from "react";
 import GamePage from "./container/GamePage/GamePage";
 
-class App extends Component {
-  render() {
+const App = () => {
     return <GamePage />;
-  }
 }
 
 export default App;

@@ -1,0 +1,62 @@
+.gameInterface{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.actionBlock{
+display: flex;
+justify-content: space-between;
+align-items: baseline;
+flex-wrap: wrap;
+width: 90%
+}
+
+.select{
+display: block;
+padding: 15px;
+font-size: 17px;
+width: 200px;
+background: #CFD8DC;
+outline: none;
+border: none;
+border-radius: 3px;
+
+}
+
+.inputName{
+display: block;
+padding: 15px;
+font-size: 17px;
+width: 200px;
+background: #F3F3F3;
+color: #000;
+outline: none;
+border: none;
+border-radius: 3px;
+}
+
+.btn{
+display: block;    
+padding: 15px;
+font-size: 18px;
+width: 100px;
+background: #7B8D93;
+color: #fff;
+border: none;
+border-radius: 3px;
+outline: none;
+}
+
+.message{
+margin-top: 20px;
+border: 1px solid black;
+
+
+}
+
+.fieldList{
+    margin-top: 20px;
+    border: 1px solid black;
+}

@@ -3,9 +3,7 @@ import s from './index.module.css';
 
 const FieldListItem = (props) => {
 return(
-    <div className={s.fieldListItem}>
-    1
-    </div>
+    <div className={s.fieldListItem}></div>
 );
 }
 

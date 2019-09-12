@@ -1,0 +1,32 @@
+.gamePagePosition{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    /* border: 1px solid red; */
+    width: 90%;
+    margin: 0 auto;
+
+}
+
+.gamePage{
+    /* border: 1px solid red; */
+    display: flex;
+    width: 100%;
+}
+
+.gameInterface{
+    border: 3px solid #EEEEEE;
+    border-right: none;
+    width: 50%;
+}
+
+.gameInterface, .leaderBoard{
+    padding: 30px 10px;
+    text-align: center;
+}
+
+.leaderBoard{
+    border: 3px solid #EEEEEE;
+    width: 50%;
+}
