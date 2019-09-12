@@ -4,7 +4,8 @@ import s from './index.module.css';
 const LeaderListItem = (props) => {
     return(
         <div className={s.leaderListItem}>
-            <p className={s.itemText}>user name</p>
+            <span className={s.itemText}>User Name</span>
+            <span className={s.itemText}>Date and Time</span>
         </div>
     );
 }

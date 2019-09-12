@@ -1,0 +1,10 @@
+.leaderListItem{
+    background: #CFD8DC;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.itemText{
+    color: #A1AAAD;
+}
