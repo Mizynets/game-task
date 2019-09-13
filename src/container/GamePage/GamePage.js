@@ -2,27 +2,19 @@ import React, { Component } from "react";
 import s from "./index.module.css";
 import GameInterface from "../../components/GameInterface/GameInterface";
 import LeaderBoard from "../../components/LeaderBoard";
-import axios from "axios";
+import { connect } from "react-redux";
+import { thunkCreaterGetModes } from "../../reduxStore/actionCreater"
 
 class GamePage extends Component {
   state = {
-    gameMode: null,
-    loading: true,
     inputName: "",
     selectValue: "",
   };
 
+  
+
   componentDidMount = () => {
-    axios
-      .get("http://starnavi-frontend-test-task.herokuapp.com/game-settings")
-      .then(response => {
-        const data = response.data;
-        this.setState({
-          gameMode: data,
-          loading: false
-        });
-      })
-      .catch(err => console.log(err));
+    this.props.thunkCreaterGetModes();
   };
 
   handleChangeInputName = e => (
@@ -37,15 +29,10 @@ class GamePage extends Component {
     })
   );
 
-  onHandlePlay = e => {
-
-  }
-
-
-
   render() {
-    const { gameMode, loading, inputName, selectValue } = this.state;
-console.log(this.state);
+    const { inputName, selectValue } = this.state;
+    const { loading, gameMode } = this.props;
+console.log(gameMode);
     if (loading) {
       return <div>loading ...</div>;
     }
@@ -73,4 +60,16 @@ console.log(this.state);
   }
 }
 
-export default GamePage;
+const mapStateToProps = ({loading, gameMode}) => {
+  return {
+    loading,
+    gameMode,
+  }
+};
+
+const mapDispatchToProps = {
+  thunkCreaterGetModes,
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(GamePage);

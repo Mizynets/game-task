@@ -9,6 +9,7 @@
 }
 .initialItem{
     flex-basis: 20%;
+    background: #000;
 }
 .item{
     border-right: 0;
@@ -33,4 +34,3 @@
     border-bottom: 0;
     flex-basis: 6.6666666666666666666666666%;
 }
-
