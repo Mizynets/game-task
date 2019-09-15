@@ -1,12 +1,23 @@
 import React, { Component } from "react";
 import s from "./index.module.css";
 import uid from "uid";
+import { connect } from "react-redux";
 
 class FieldList extends Component {
   componentDidUpdate = prevProps => {
-    const { startGameSelect, playGame } = this.props;
+    const { startGameSelect, playGame, gameMode, selectValue } = this.props;
     if (playGame !== prevProps.playGame) {
-      setTimeout(startGameSelect,2000)
+        const modeValue = +selectValue;
+        const delay =
+          modeValue === 5
+            ? gameMode.easyMode.delay
+            : modeValue === 10
+            ? gameMode.normalMode.delay
+            : modeValue === 15
+            ? gameMode.hardMode.delay
+            : null;
+
+      setTimeout(startGameSelect,delay)
     }
   };
 
@@ -64,4 +75,10 @@ class FieldList extends Component {
   }
 }
 
-export default FieldList;
+const mapStateToProps = ({gameMode}) => {
+    return {
+        gameMode,
+    }
+}
+
+export default connect(mapStateToProps, null)(FieldList);

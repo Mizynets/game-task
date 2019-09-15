@@ -3,7 +3,10 @@ import s from "./index.module.css";
 import GameInterface from "../../components/GameInterface/GameInterface";
 import LeaderBoard from "../../components/LeaderBoard";
 import { connect } from "react-redux";
-import { thunkCreaterGetModes, getObjArr } from "../../reduxStore/actionCreater";
+import {
+  thunkCreaterGetModes,
+  getObjArr
+} from "../../reduxStore/actionCreater";
 import uid from "uid";
 
 class GamePage extends Component {
@@ -11,16 +14,17 @@ class GamePage extends Component {
     inputName: "",
     selectValue: "",
     startGame: false,
+    gameOver: false,
     randomArr: null,
-    propertiesItemArr: [],
+    propertiesItemArr: []
   };
 
   createItemPropertiesArr = () => {
     const { selectValue } = this.state;
-    
+
     const fieldSizeList = +selectValue;
 
-    const arrProperties =  fieldSizeList
+    const arrProperties = fieldSizeList
       ? Array(Math.pow(fieldSizeList, 2))
           .fill()
           .map(() => ({
@@ -29,24 +33,23 @@ class GamePage extends Component {
             isCurrentUserSelected: false,
             isComputerSelected: false
           }))
-      : [];  
+      : [];
 
-      this.setState({
-        propertiesItemArr: arrProperties,
-      })
-  }
+    this.setState({
+      propertiesItemArr: arrProperties
+    });
+  };
 
   componentDidMount = () => {
     this.props.thunkCreaterGetModes();
     this.createItemPropertiesArr();
-
   };
 
   componentDidUpdate = (_, prevState) => {
-    if(prevState.selectValue !== this.state.selectValue){
+    if (prevState.selectValue !== this.state.selectValue) {
       this.createItemPropertiesArr();
     }
-  }
+  };
 
   handleChangeInputName = e =>
     this.setState({
@@ -59,68 +62,153 @@ class GamePage extends Component {
     });
 
   onHandlePlay = () => {
+  
     this.setState({
       startGame: true
     });
   };
-  
+
   isCurrentUserSelectedChecker = item => item.isCurrentUserSelected;
   isComputerSelectedChecker = item => item.isComputerSelected;
   isSelectedChecker = item => item.isSelected;
 
-  getRandomArr = (arrLength) => Math.floor(Math.random() * arrLength);
+  getRandomArr = arrLength => Math.floor(Math.random() * arrLength);
 
-    // const array = Array(arrLength).fill().map((_,i) => i);
-    // const randomArray = array.sort(() => Math.random() - 0.5);
-    // this.setState({
-    //   randomArr: randomArray,
-    // })
-  
-  i = 0
+  // const array = Array(arrLength).fill().map((_,i) => i);
+  // const randomArray = array.sort(() => Math.random() - 0.5);
+  // this.setState({
+  //   randomArr: randomArray,
+  // })
+
+  i = 0;
   timer;
   timerStartSelected;
 
   selectedCell = () => {
-   const { propertiesItemArr, randomArr } = this.state;
-   const cloneArr = [...propertiesItemArr];
-   const ind = this.i++
-   cloneArr[ind].isSelected = true;
+    const { propertiesItemArr, randomArr, selectValue, gameOver } = this.state;
+
+    const winUser = propertiesItemArr.filter(el => el.isCurrentUserSelected);
+    const winComputer = propertiesItemArr.filter(el => el.isComputerSelected);
+
+    if(winUser.length > Math.floor(propertiesItemArr.length / 2) || winComputer.length > Math.floor(propertiesItemArr.length / 2)){
+      this.setState({
+        gameOver: true,
+      })
+    }
+
+    if(gameOver){
+      console.log("game over")
+      return ;
+    }
+
+    const { gameMode } = this.props;
+    const modeValue = +selectValue;
+
+    const delay =
+      modeValue === 5
+        ? gameMode.easyMode.delay
+        : modeValue === 10
+        ? gameMode.normalMode.delay
+        : modeValue === 15
+        ? gameMode.hardMode.delay
+        : null;
+
+    const cloneArr = [...propertiesItemArr];
+    const ind = this.i++;
+    cloneArr[ind].isSelected = true;
     this.setState({
-      propertiesItemArr: cloneArr,
-    })
+      propertiesItemArr: cloneArr
+    });
 
-    this.timer = setTimeout(this.selectedComputer
-    , 1000);
-  }
+    this.timer = setTimeout(this.selectedComputer, 500);
+  };
 
-  selectedUser = (e) => {
-   clearTimeout(this.timer);
+  selectedUser = e => {
+    clearTimeout(this.timer);
     const selectedItemID = e.currentTarget.dataset.id;
-    const { propertiesItemArr } = this.state;
+    const { propertiesItemArr, selectValue, gameOver } = this.state;
+
+
+    const winUser = propertiesItemArr.filter(el => el.isCurrentUserSelected);
+    const winComputer = propertiesItemArr.filter(el => el.isComputerSelected);
+
+    if(winUser.length > Math.floor(propertiesItemArr.length / 2) || winComputer.length > Math.floor(propertiesItemArr.length / 2)){
+      this.setState({
+        gameOver: true,
+      })
+    }
+
+    if(gameOver){
+      console.log("game over")
+      return ;
+    }
+
+
+    const { gameMode } = this.props;
+    const modeValue = +selectValue;
+
+    const delay =
+      modeValue === 5
+        ? gameMode.easyMode.delay
+        : modeValue === 10
+        ? gameMode.normalMode.delay
+        : modeValue === 15
+        ? gameMode.hardMode.delay
+        : null;
+
     const cloneArr = [...propertiesItemArr];
     cloneArr[selectedItemID].isCurrentUserSelected = true;
     this.setState({
-      propertiesItemArr: cloneArr,
-    })
-    setTimeout(this.selectedCell
-      , 1000);
-  }
+      propertiesItemArr: cloneArr
+    });
+    setTimeout(this.selectedCell, 500);
+  };
 
   selectedComputer = () => {
-        const { propertiesItemArr } = this.state;
-        const cloneArr = [...propertiesItemArr];
-        const selectedIndex = cloneArr.findIndex(e => e.isSelected && !e.isCurrentUserSelected && !e.isComputerSelected);
-        cloneArr[selectedIndex].isComputerSelected = true;
-        this.setState({
-          propertiesItemArr: cloneArr,
-        })
-        setTimeout(this.selectedCell
-          , 1000);   
-  }
+    const { propertiesItemArr, selectValue, gameOver } = this.state;
+
+
+    const winUser = propertiesItemArr.filter(el => el.isCurrentUserSelected);
+    const winComputer = propertiesItemArr.filter(el => el.isComputerSelected);
+
+    if(winUser.length > Math.floor(propertiesItemArr.length / 2) || winComputer.length > Math.floor(propertiesItemArr.length / 2)){
+      this.setState({
+        gameOver: true,
+      })
+    }
+
+    if(gameOver){
+      console.log("game over")
+      return ;
+    }
+
+    const { gameMode } = this.props;
+    const modeValue = +selectValue;
+
+    const delay =
+      modeValue === 5
+        ? gameMode.easyMode.delay
+        : modeValue === 10
+        ? gameMode.normalMode.delay
+        : modeValue === 15
+        ? gameMode.hardMode.delay
+        : null;
+    
+    const cloneArr = [...propertiesItemArr];
+    const selectedIndex = cloneArr.findIndex(
+      e => e.isSelected && !e.isCurrentUserSelected && !e.isComputerSelected
+    );
+    cloneArr[selectedIndex].isComputerSelected = true;
+    this.setState({
+      propertiesItemArr: cloneArr
+    });
+    setTimeout(this.selectedCell, 1000);
+  };
 
   render() {
     const { inputName, selectValue, startGame, propertiesItemArr } = this.state;
     const { loading, gameMode } = this.props;
+    console.log(gameMode);
     if (loading) {
       return <div>loading ...</div>;
     }
@@ -128,12 +216,13 @@ class GamePage extends Component {
     const winUser = propertiesItemArr.filter(el => el.isCurrentUserSelected);
     const winComputer = propertiesItemArr.filter(el => el.isComputerSelected);
 
-    const winnerMassage = winUser.length > Math.floor(propertiesItemArr.length / 2) 
-    ? `${inputName} Win` 
-    : winComputer.length > Math.floor(propertiesItemArr.length / 2)
-    ? `Computer Win`
-    : `Massage` 
-          
+    const winnerMassage =
+      winUser.length > Math.floor(propertiesItemArr.length / 2)
+        ? `${inputName} Win`
+        : winComputer.length > Math.floor(propertiesItemArr.length / 2)
+        ? `Computer Win`
+        : `Massage`;
+
     return (
       <div className={s.gamePagePosition}>
         <div className={s.gamePage}>
@@ -174,7 +263,7 @@ const mapStateToProps = ({ loading, gameMode }) => {
 
 const mapDispatchToProps = {
   thunkCreaterGetModes,
-getObjArr,
+  getObjArr
 };
 
 export default connect(
