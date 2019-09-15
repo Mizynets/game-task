@@ -3,52 +3,157 @@ import s from "./index.module.css";
 import GameInterface from "../../components/GameInterface/GameInterface";
 import LeaderBoard from "../../components/LeaderBoard";
 import { connect } from "react-redux";
-import { thunkCreaterGetModes } from "../../reduxStore/actionCreater"
+import { thunkCreaterGetModes, getObjArr } from "../../reduxStore/actionCreater";
+import uid from "uid";
 
 class GamePage extends Component {
   state = {
     inputName: "",
     selectValue: "",
+    startGame: false,
+    randomArr: null,
+    propertiesItemArr: [],
   };
 
-  
+  createItemPropertiesArr = () => {
+    const { selectValue } = this.state;
+    
+    const fieldSizeList = +selectValue;
+
+    const arrProperties =  fieldSizeList
+      ? Array(Math.pow(fieldSizeList, 2))
+          .fill()
+          .map(() => ({
+            id: uid(),
+            isSelected: false,
+            isCurrentUserSelected: false,
+            isComputerSelected: false
+          }))
+      : [];  
+
+      this.setState({
+        propertiesItemArr: arrProperties,
+      })
+  }
 
   componentDidMount = () => {
     this.props.thunkCreaterGetModes();
+    this.createItemPropertiesArr();
+
   };
 
-  handleChangeInputName = e => (
-    this.setState({
-      inputName: e.target.value,
-    })
-  ); 
+  componentDidUpdate = (_, prevState) => {
+    if(prevState.selectValue !== this.state.selectValue){
+      this.createItemPropertiesArr();
+    }
+  }
 
-  handleChangeSelect = e => (
+  handleChangeInputName = e =>
     this.setState({
-      selectValue: e.target.value,
+      inputName: e.target.value
+    });
+
+  handleChangeSelect = e =>
+    this.setState({
+      selectValue: e.target.value
+    });
+
+  onHandlePlay = () => {
+    this.setState({
+      startGame: true
+    });
+  };
+  
+  isCurrentUserSelectedChecker = item => item.isCurrentUserSelected;
+  isComputerSelectedChecker = item => item.isComputerSelected;
+  isSelectedChecker = item => item.isSelected;
+
+  getRandomArr = (arrLength) => Math.floor(Math.random() * arrLength);
+
+    // const array = Array(arrLength).fill().map((_,i) => i);
+    // const randomArray = array.sort(() => Math.random() - 0.5);
+    // this.setState({
+    //   randomArr: randomArray,
+    // })
+  
+  i = 0
+  timer;
+  timerStartSelected;
+
+  selectedCell = () => {
+   const { propertiesItemArr, randomArr } = this.state;
+   const cloneArr = [...propertiesItemArr];
+   const ind = this.i++
+   cloneArr[ind].isSelected = true;
+    this.setState({
+      propertiesItemArr: cloneArr,
     })
-  );
+
+    this.timer = setTimeout(this.selectedComputer
+    , 1000);
+  }
+
+  selectedUser = (e) => {
+   clearTimeout(this.timer);
+    const selectedItemID = e.currentTarget.dataset.id;
+    const { propertiesItemArr } = this.state;
+    const cloneArr = [...propertiesItemArr];
+    cloneArr[selectedItemID].isCurrentUserSelected = true;
+    this.setState({
+      propertiesItemArr: cloneArr,
+    })
+    setTimeout(this.selectedCell
+      , 1000);
+  }
+
+  selectedComputer = () => {
+        const { propertiesItemArr } = this.state;
+        const cloneArr = [...propertiesItemArr];
+        const selectedIndex = cloneArr.findIndex(e => e.isSelected && !e.isCurrentUserSelected && !e.isComputerSelected);
+        cloneArr[selectedIndex].isComputerSelected = true;
+        this.setState({
+          propertiesItemArr: cloneArr,
+        })
+        setTimeout(this.selectedCell
+          , 1000);   
+  }
 
   render() {
-    const { inputName, selectValue } = this.state;
+    const { inputName, selectValue, startGame, propertiesItemArr } = this.state;
     const { loading, gameMode } = this.props;
-console.log(gameMode);
     if (loading) {
       return <div>loading ...</div>;
     }
 
+    const winUser = propertiesItemArr.filter(el => el.isCurrentUserSelected);
+    const winComputer = propertiesItemArr.filter(el => el.isComputerSelected);
+
+    const winnerMassage = winUser.length > Math.floor(propertiesItemArr.length / 2) 
+    ? `${inputName} Win` 
+    : winComputer.length > Math.floor(propertiesItemArr.length / 2)
+    ? `Computer Win`
+    : `Massage` 
+          
     return (
       <div className={s.gamePagePosition}>
         <div className={s.gamePage}>
           <div className={s.gameInterface}>
             <GameInterface
               inputName={inputName}
+              propertiesList={this.state.propertiesItemArr}
               selectValue={selectValue}
               gameMode={gameMode}
               handleChangeSelect={this.handleChangeSelect}
               handleChangeInputName={this.handleChangeInputName}
               onHandlePlay={this.onHandlePlay}
-              fieldSize={selectValue}
+              startGame={startGame}
+              isUserSelected={this.isCurrentUserSelectedChecker}
+              isSelected={this.isSelectedChecker}
+              isComputerSelected={this.isComputerSelectedChecker}
+              selectedUser={this.selectedUser}
+              startGameSelect={this.selectedCell}
+              timerStart={this.timerStart}
+              winnerMassage={winnerMassage}
             />
           </div>
           <div className={s.leaderBoard}>
@@ -60,16 +165,19 @@ console.log(gameMode);
   }
 }
 
-const mapStateToProps = ({loading, gameMode}) => {
+const mapStateToProps = ({ loading, gameMode }) => {
   return {
     loading,
-    gameMode,
-  }
+    gameMode
+  };
 };
 
 const mapDispatchToProps = {
   thunkCreaterGetModes,
-}
+getObjArr,
+};
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(GamePage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(GamePage);

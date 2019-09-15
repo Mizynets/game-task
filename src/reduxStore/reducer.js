@@ -1,9 +1,10 @@
-import { FETCH_MODES, FETCH_LOADED, FETCH_ERROR } from "./constants";
+import { FETCH_MODES, FETCH_LOADED, FETCH_ERROR, GET_OBJ_ARR } from "./constants";
 
 const initialState = {
   gameMode: null,
   loading: true,
-  err: null
+  err: null,
+  propertiesItemList: null,
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -27,6 +28,12 @@ const reducer = (state = initialState, { type, payload }) => {
         gameMode: payload,
         loading: false,
       };
+
+      case GET_OBJ_ARR:
+        return{
+          ...state,
+          propertiesItemList: payload
+        }
 
     default:
       return state;

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { FETCH_MODES, FETCH_LOADED, FETCH_ERROR } from './constants';
+import { FETCH_MODES, FETCH_LOADED, FETCH_ERROR, GET_OBJ_ARR } from './constants';
 
 export const fetchModes = (data) =>{
     return {
@@ -22,6 +22,13 @@ export const fetchError = (err) => {
          payload: err,
     }
 };
+
+export const getObjArr = (arr) => {
+    return{
+        type: GET_OBJ_ARR,
+        payload: arr,
+    }
+}
 
 export const thunkCreaterGetModes = () => (dispatch) => {
     dispatch(fetchLoaded());
