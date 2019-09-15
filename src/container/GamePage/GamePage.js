@@ -5,7 +5,7 @@ import LeaderBoard from "../../components/LeaderBoard";
 import { connect } from "react-redux";
 import {
   thunkCreaterGetModes,
-  getObjArr
+  thunkCreaterGetWinner,
 } from "../../reduxStore/actionCreater";
 import uid from "uid";
 
@@ -16,7 +16,8 @@ class GamePage extends Component {
     startGame: false,
     gameOver: false,
     randomArr: null,
-    propertiesItemArr: []
+    propertiesItemArr: [],
+    resetGame: false,
   };
 
   createItemPropertiesArr = () => {
@@ -42,12 +43,18 @@ class GamePage extends Component {
 
   componentDidMount = () => {
     this.props.thunkCreaterGetModes();
+    this.props.thunkCreaterGetWinner();
     this.createItemPropertiesArr();
   };
 
   componentDidUpdate = (_, prevState) => {
     if (prevState.selectValue !== this.state.selectValue) {
       this.createItemPropertiesArr();
+    }
+    else if (prevState.gameOver !== this.state.gameOver){
+      this.setState({
+        resetGame: true,
+      })
     }
   };
 
@@ -62,7 +69,20 @@ class GamePage extends Component {
     });
 
   onHandlePlay = () => {
+  const { resetGame } = this.state;
+  if(resetGame){
+    this.setState({
+      inputName: "",
+      selectValue: "",
+      startGame: true,
+      gameOver: false,
+      randomArr: null,
+      propertiesItemArr: [],
+      resetGame: false,
+    })
   
+    console.log(this.state);
+  }
     this.setState({
       startGame: true
     });
@@ -120,7 +140,7 @@ class GamePage extends Component {
       propertiesItemArr: cloneArr
     });
 
-    this.timer = setTimeout(this.selectedComputer, 500);
+    this.timer = setTimeout(this.selectedComputer, 100);
   };
 
   selectedUser = e => {
@@ -161,7 +181,7 @@ class GamePage extends Component {
     this.setState({
       propertiesItemArr: cloneArr
     });
-    setTimeout(this.selectedCell, 500);
+    setTimeout(this.selectedCell, 100);
   };
 
   selectedComputer = () => {
@@ -202,13 +222,13 @@ class GamePage extends Component {
     this.setState({
       propertiesItemArr: cloneArr
     });
-    setTimeout(this.selectedCell, 1000);
+    setTimeout(this.selectedCell, 100);
   };
 
   render() {
-    const { inputName, selectValue, startGame, propertiesItemArr } = this.state;
-    const { loading, gameMode } = this.props;
-    console.log(gameMode);
+    const { inputName, selectValue, startGame, propertiesItemArr, gameOver } = this.state;
+    const { loading, gameMode,gameWinner } = this.props;
+ 
     if (loading) {
       return <div>loading ...</div>;
     }
@@ -222,6 +242,8 @@ class GamePage extends Component {
         : winComputer.length > Math.floor(propertiesItemArr.length / 2)
         ? `Computer Win`
         : `Massage`;
+
+    const buttonValue = gameOver ? "PLAY AGAIN" : "PLAY";
 
     return (
       <div className={s.gamePagePosition}>
@@ -243,6 +265,7 @@ class GamePage extends Component {
               startGameSelect={this.selectedCell}
               timerStart={this.timerStart}
               winnerMassage={winnerMassage}
+              buttonValue={buttonValue}
             />
           </div>
           <div className={s.leaderBoard}>
@@ -254,16 +277,17 @@ class GamePage extends Component {
   }
 }
 
-const mapStateToProps = ({ loading, gameMode }) => {
+const mapStateToProps = ({ loading, gameMode, gameWinner }) => {
   return {
     loading,
-    gameMode
+    gameMode,
+    gameWinner,
   };
 };
 
 const mapDispatchToProps = {
   thunkCreaterGetModes,
-  getObjArr
+  thunkCreaterGetWinner,
 };
 
 export default connect(

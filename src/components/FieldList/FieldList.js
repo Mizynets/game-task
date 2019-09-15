@@ -4,6 +4,7 @@ import uid from "uid";
 import { connect } from "react-redux";
 
 class FieldList extends Component {
+    
   componentDidUpdate = prevProps => {
     const { startGameSelect, playGame, gameMode, selectValue } = this.props;
     if (playGame !== prevProps.playGame) {
