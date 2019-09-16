@@ -1,16 +1,9 @@
 import axios from 'axios';
-import { FETCH_MODES, FETCH_LOADED, FETCH_ERROR, GET_OBJ_ARR, FETCH_WINNER } from './constants';
+import { FETCH_MODES, FETCH_LOADED, FETCH_ERROR, POST_WINNER } from './constants';
 
 export const fetchModes = (data) =>{
     return {
         type: FETCH_MODES,
-        payload: data,
-    }
-};
-
-export const fetchWinner = (data) =>{
-    return {
-        type: FETCH_WINNER,
         payload: data,
     }
 };
@@ -30,6 +23,12 @@ export const fetchError = (err) => {
     }
 };
 
+export const postWinner = () => {
+    return{
+        type: POST_WINNER,
+    }
+}
+
 export const thunkCreaterGetModes = () => (dispatch) => {
     dispatch(fetchLoaded());
     axios.get("http://starnavi-frontend-test-task.herokuapp.com/game-settings")
@@ -37,9 +36,10 @@ export const thunkCreaterGetModes = () => (dispatch) => {
     .catch(err => dispatch(fetchError(err)));
 }
 
-export const thunkCreaterGetWinner = () => (dispatch) => {
+export const thunkCreaterPostWinner = (winnerObj) => (dispatch) => {
     dispatch(fetchLoaded());
-    axios.get("http://starnavi-frontend-test-task.herokuapp.com/winners")
-    .then(response => dispatch(fetchWinner(response.data)))
+    axios
+    .post("http://starnavi-frontend-test-task.herokuapp.com/winners", winnerObj)
+    .then(response => dispatch(postWinner()))
     .catch(err => dispatch(fetchError(err)));
 }

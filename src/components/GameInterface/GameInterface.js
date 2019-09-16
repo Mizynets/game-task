@@ -20,7 +20,7 @@ class GameInterface extends Component {
       startGameSelect,
       timerStart,
       winnerMassage,
-      buttonValue,
+      buttonValue
     } = this.props;
 
     return (
@@ -43,7 +43,11 @@ class GameInterface extends Component {
             value={inputName}
             onChange={handleChangeInputName}
           />
-          <button className={s.btn} onClick={onHandlePlay}>
+          <button
+            disabled={!(selectValue.length > 0 && inputName.trim().length > 0)}
+            className={s.btn}
+            onClick={onHandlePlay}
+          >
             {buttonValue}
           </button>
         </div>

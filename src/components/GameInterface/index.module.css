@@ -47,7 +47,14 @@ color: #fff;
 border: none;
 border-radius: 3px;
 outline: none;
+cursor: pointer;
 }
+
+.btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
 
 .message{
 margin-top: 20px;

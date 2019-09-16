@@ -2,10 +2,10 @@ import React from 'react';
 import s from './index.module.css';
 import LeaderList from '../LeaderList';
 
-const LeaderBoard = (props) => {
+const LeaderBoard = ({list}) => {
     return(
         <div className={s.LeaderBoard}>
-            <LeaderList />
+            <LeaderList list={list} />
         </div>
     );
 }

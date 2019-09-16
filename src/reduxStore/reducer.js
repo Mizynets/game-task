@@ -1,11 +1,9 @@
-import { FETCH_MODES, FETCH_LOADED, FETCH_ERROR, FETCH_WINNER } from "./constants";
+import { FETCH_MODES, FETCH_LOADED, FETCH_ERROR,POST_WINNER } from "./constants";
 
 const initialState = {
   gameMode: null,
-  gameWinner: null,
   loading: true,
   err: null,
-  propertiesItemList: null,
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -30,13 +28,12 @@ const reducer = (state = initialState, { type, payload }) => {
         loading: false,
       };
 
-    case FETCH_WINNER:
-      return {
-        ...state,
-        gameWinner: payload,
-        loading: false,
-      }
-
+      case POST_WINNER:
+        return {
+          ...state,
+          loading: false,
+        }
+  
     default:
       return state;
   }

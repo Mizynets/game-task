@@ -3,22 +3,25 @@ import s from "./index.module.css";
 import GameInterface from "../../components/GameInterface/GameInterface";
 import LeaderBoard from "../../components/LeaderBoard";
 import { connect } from "react-redux";
-import {
-  thunkCreaterGetModes,
-  thunkCreaterGetWinner,
-} from "../../reduxStore/actionCreater";
+import { thunkCreaterGetModes, thunkCreaterPostWinner } from "../../reduxStore/actionCreater";
 import uid from "uid";
+
 
 class GamePage extends Component {
   state = {
     inputName: "",
     selectValue: "",
+    winner: "",
     startGame: false,
     gameOver: false,
     randomArr: null,
     propertiesItemArr: [],
     resetGame: false,
+    leader: [],
   };
+  i = 0;
+  timer;
+  timerStartSelected;
 
   createItemPropertiesArr = () => {
     const { selectValue } = this.state;
@@ -43,18 +46,16 @@ class GamePage extends Component {
 
   componentDidMount = () => {
     this.props.thunkCreaterGetModes();
-    this.props.thunkCreaterGetWinner();
     this.createItemPropertiesArr();
   };
 
   componentDidUpdate = (_, prevState) => {
     if (prevState.selectValue !== this.state.selectValue) {
       this.createItemPropertiesArr();
-    }
-    else if (prevState.gameOver !== this.state.gameOver){
+    } else if (prevState.gameOver !== this.state.gameOver) {
       this.setState({
-        resetGame: true,
-      })
+        resetGame: true
+      });
     }
   };
 
@@ -69,73 +70,109 @@ class GamePage extends Component {
     });
 
   onHandlePlay = () => {
-  const { resetGame } = this.state;
-  if(resetGame){
-    this.setState({
-      inputName: "",
-      selectValue: "",
-      startGame: true,
-      gameOver: false,
-      randomArr: null,
-      propertiesItemArr: [],
-      resetGame: false,
-    })
-  
-    console.log(this.state);
-  }
-    this.setState({
-      startGame: true
-    });
+    const { resetGame, gameOver, selectValue } = this.state;
+    if (resetGame) {
+      this.i = 0;
+      this.setState(
+        {
+          inputName: "",
+          selectValue: "",
+          gameOver: false,
+          randomArr: null,
+          propertiesItemArr: [],
+          resetGame: false,
+          startGame: false,
+        })
+      
+    }
+    
+    if (!gameOver) {
+        const delay = this.getDelay(selectValue);
+        const len = Math.pow(+selectValue, 2);
+        this.getRandomArr(len);
+        setTimeout(this.selectedCell, 1000);
+    }
   };
 
   isCurrentUserSelectedChecker = item => item.isCurrentUserSelected;
   isComputerSelectedChecker = item => item.isComputerSelected;
   isSelectedChecker = item => item.isSelected;
 
-  getRandomArr = arrLength => Math.floor(Math.random() * arrLength);
-
-  // const array = Array(arrLength).fill().map((_,i) => i);
-  // const randomArray = array.sort(() => Math.random() - 0.5);
-  // this.setState({
-  //   randomArr: randomArray,
-  // })
-
-  i = 0;
-  timer;
-  timerStartSelected;
-
-  selectedCell = () => {
-    const { propertiesItemArr, randomArr, selectValue, gameOver } = this.state;
-
-    const winUser = propertiesItemArr.filter(el => el.isCurrentUserSelected);
-    const winComputer = propertiesItemArr.filter(el => el.isComputerSelected);
-
-    if(winUser.length > Math.floor(propertiesItemArr.length / 2) || winComputer.length > Math.floor(propertiesItemArr.length / 2)){
-      this.setState({
-        gameOver: true,
-      })
+  createLeaderList = () => {
+    const { winner } = this.state;
+    const obj = {
+        name: winner,
+        date: JSON.stringify(new Date().toLocaleString()),
     }
+    const leaderTemp = [obj];
 
-    if(gameOver){
-      console.log("game over")
-      return ;
-    }
+    this.setState((prevProps) => {
+      return{
+        leader: [...prevProps.leader, ...leaderTemp],
+      }
+    })
+}
 
+  getDelay = (selectValue) => {
     const { gameMode } = this.props;
     const modeValue = +selectValue;
 
-    const delay =
-      modeValue === 5
+    return  modeValue === 5
         ? gameMode.easyMode.delay
         : modeValue === 10
         ? gameMode.normalMode.delay
         : modeValue === 15
         ? gameMode.hardMode.delay
         : null;
+  }
 
+  getRandomArr = arrLength => {
+    const { randomArr } = this.state;
+    const array = Array(arrLength)
+      .fill()
+      .map((_, i) => i);
+    if (!randomArr) {
+      this.setState({
+        randomArr: array.sort(() => Math.random() - 0.5),
+      });
+    }
+  };
+
+  stopGame = () => {
+    const { propertiesItemArr, inputName } = this.state;
+
+    const winUser = propertiesItemArr.filter(el => el.isCurrentUserSelected);
+    const winComputer = propertiesItemArr.filter(el => el.isComputerSelected);
+    
+    let winner = null;
+    let gameOver = false;
+    
+    if (winUser.length > Math.floor(propertiesItemArr.length / 2)) {
+      winner = inputName;
+      gameOver = true;
+    }
+    else if (winComputer.length > Math.floor(propertiesItemArr.length / 2)){
+      winner = "computer";
+      gameOver = true
+    }
+    
+   gameOver && this.setState({
+        gameOver: gameOver,
+        winner: winner,
+      });
+  };
+
+  selectedCell = () => {
+    const { propertiesItemArr, randomArr, selectValue, gameOver } = this.state;
+    this.stopGame();
+    if (gameOver) {
+      console.log("game selected");
+      return;
+    }
+    const delay = this.getDelay(selectValue);
     const cloneArr = [...propertiesItemArr];
     const ind = this.i++;
-    cloneArr[ind].isSelected = true;
+    cloneArr[randomArr[ind]].isSelected = true;
     this.setState({
       propertiesItemArr: cloneArr
     });
@@ -147,34 +184,13 @@ class GamePage extends Component {
     clearTimeout(this.timer);
     const selectedItemID = e.currentTarget.dataset.id;
     const { propertiesItemArr, selectValue, gameOver } = this.state;
-
-
-    const winUser = propertiesItemArr.filter(el => el.isCurrentUserSelected);
-    const winComputer = propertiesItemArr.filter(el => el.isComputerSelected);
-
-    if(winUser.length > Math.floor(propertiesItemArr.length / 2) || winComputer.length > Math.floor(propertiesItemArr.length / 2)){
-      this.setState({
-        gameOver: true,
-      })
+    this.stopGame();
+    if (gameOver) {
+      console.log("game over user");
+      return;
     }
 
-    if(gameOver){
-      console.log("game over")
-      return ;
-    }
-
-
-    const { gameMode } = this.props;
-    const modeValue = +selectValue;
-
-    const delay =
-      modeValue === 5
-        ? gameMode.easyMode.delay
-        : modeValue === 10
-        ? gameMode.normalMode.delay
-        : modeValue === 15
-        ? gameMode.hardMode.delay
-        : null;
+    const delay = this.getDelay(selectValue);
 
     const cloneArr = [...propertiesItemArr];
     cloneArr[selectedItemID].isCurrentUserSelected = true;
@@ -185,35 +201,21 @@ class GamePage extends Component {
   };
 
   selectedComputer = () => {
-    const { propertiesItemArr, selectValue, gameOver } = this.state;
-
-
-    const winUser = propertiesItemArr.filter(el => el.isCurrentUserSelected);
-    const winComputer = propertiesItemArr.filter(el => el.isComputerSelected);
-
-    if(winUser.length > Math.floor(propertiesItemArr.length / 2) || winComputer.length > Math.floor(propertiesItemArr.length / 2)){
-      this.setState({
-        gameOver: true,
-      })
-    }
-
-    if(gameOver){
-      console.log("game over")
-      return ;
-    }
-
-    const { gameMode } = this.props;
-    const modeValue = +selectValue;
-
-    const delay =
-      modeValue === 5
-        ? gameMode.easyMode.delay
-        : modeValue === 10
-        ? gameMode.normalMode.delay
-        : modeValue === 15
-        ? gameMode.hardMode.delay
-        : null;
+    const { propertiesItemArr, selectValue, gameOver, inputName, winner } = this.state;
+    const { thunkCreaterPostWinner } = this.props;
     
+    this.stopGame();
+    
+    if (gameOver) {
+      this.createLeaderList();
+      winner === inputName 
+      ? thunkCreaterPostWinner(JSON.stringify({winner: inputName, data: new Date()}))    
+      : thunkCreaterPostWinner(JSON.stringify({winner: "computer", data: new Date()}));
+      return;
+    }
+
+    const delay = this.getDelay(selectValue);
+
     const cloneArr = [...propertiesItemArr];
     const selectedIndex = cloneArr.findIndex(
       e => e.isSelected && !e.isCurrentUserSelected && !e.isComputerSelected
@@ -226,9 +228,15 @@ class GamePage extends Component {
   };
 
   render() {
-    const { inputName, selectValue, startGame, propertiesItemArr, gameOver } = this.state;
-    const { loading, gameMode,gameWinner } = this.props;
- 
+    const {
+      inputName,
+      selectValue,
+      startGame,
+      propertiesItemArr,
+      gameOver,
+      leader,
+    } = this.state;
+    const { loading, gameMode } = this.props;
     if (loading) {
       return <div>loading ...</div>;
     }
@@ -241,7 +249,7 @@ class GamePage extends Component {
         ? `${inputName} Win`
         : winComputer.length > Math.floor(propertiesItemArr.length / 2)
         ? `Computer Win`
-        : `Massage`;
+        : `Massage hare`;
 
     const buttonValue = gameOver ? "PLAY AGAIN" : "PLAY";
 
@@ -269,7 +277,10 @@ class GamePage extends Component {
             />
           </div>
           <div className={s.leaderBoard}>
-            <LeaderBoard />
+            <LeaderBoard
+              list={leader}
+              // gameOver={gameOver}
+            />
           </div>
         </div>
       </div>
@@ -277,17 +288,16 @@ class GamePage extends Component {
   }
 }
 
-const mapStateToProps = ({ loading, gameMode, gameWinner }) => {
+const mapStateToProps = ({ loading, gameMode }) => {
   return {
     loading,
-    gameMode,
-    gameWinner,
+    gameMode
   };
 };
 
 const mapDispatchToProps = {
   thunkCreaterGetModes,
-  thunkCreaterGetWinner,
+  thunkCreaterPostWinner
 };
 
 export default connect(
