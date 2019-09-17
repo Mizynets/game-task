@@ -2,15 +2,23 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    width: 90%;
+    height: 100%;
+    width: 95%;
     margin: 0 auto;
+    margin-top: 50px;
+}
 
+.spinner{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 .gamePage{
     display: flex;
     width: 100%;
+    margin-bottom: 50px;
 }
 
 .gameInterface{
@@ -29,26 +37,16 @@
     width: 50%;
 }
 
-.item{
-    border-right: 0;
-    border-bottom: 0;
-    border: 2px solid #EDEDF0;
-}
-
-.item_basis_5{
-    flex-basis: 20%;
-    border-right: 0;
-    border-bottom: 0;
-}
-
-.item_basis_10{
-    flex-basis: 10%;
-    border-right: 0;
-    border-bottom: 0;
-}
-
-.item_basis_15{
-    border-right: 0;
-    border-bottom: 0;
-    flex-basis: 6.6666666666666666666666666%;
+@media screen and (max-width: 725px){
+    .gamePage{
+      display: block;
+    }
+    .gameInterface{
+        border: 3px solid #EEEEEE;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+    .leaderBoard{
+        width: 100%;
+    }
 }

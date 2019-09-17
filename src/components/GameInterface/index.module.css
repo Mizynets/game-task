@@ -22,7 +22,6 @@ background: #CFD8DC;
 outline: none;
 border: none;
 border-radius: 3px;
-
 }
 
 .inputName{
@@ -39,9 +38,8 @@ border-radius: 3px;
 
 .btn{
 display: block;    
-padding: 15px;
-font-size: 18px;
-width: 100px;
+padding: 15px 5px;
+width: 110px;
 background: #7B8D93;
 color: #fff;
 border: none;
@@ -55,15 +53,26 @@ cursor: pointer;
     cursor: not-allowed;
 }
 
+.messageText{
+    font-size: 18px;
+    color: rgb(112, 132, 138)
+}
 
 .message{
 margin-top: 20px;
-border: 1px solid black;
-
-
 }
 
 .fieldList{
     margin-top: 20px;
-    /* border: 1px solid black; */
+}
+
+@media screen and (max-width: 1350px){
+    .actionBlock{
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .select, .inputName, .btn{
+        margin-bottom: 10px;
+    }
 }

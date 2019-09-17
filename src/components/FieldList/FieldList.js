@@ -28,7 +28,7 @@ render() {
     
     const classes = this.createClasses(selectValue);
 
-    const listItem = propertiesList.length ? (
+    const listItem = (
       propertiesList.map((el, indx) => {
         return (
           <li
@@ -46,11 +46,10 @@ render() {
                 : "white"
             }}
           >
-            1
           </li>
         );
       })
-    ) : (<h2>Pleae Select MODE</h2>)
+    ) 
 
     return (
       <div className={s.fieldList}>
