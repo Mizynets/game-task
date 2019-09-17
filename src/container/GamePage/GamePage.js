@@ -256,7 +256,7 @@ class GamePage extends Component {
         : (propertiesItemArr.length === 0 || inputName.length === 0)
         ? `Inputs should be full`
         : `Game`
-console.log(inputName.length, propertiesItemArr.length);
+
     const buttonValue = gameOver ? "PLAY AGAIN" : "PLAY";
 
     return (
