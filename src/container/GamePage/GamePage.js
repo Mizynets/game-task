@@ -27,9 +27,8 @@ class GamePage extends Component {
 
   createItemPropertiesArr = () => {
     const { selectValue } = this.state;
-
     const fieldSizeList = +selectValue;
-
+   
     const arrProperties = fieldSizeList
       ? Array(Math.pow(fieldSizeList, 2))
           .fill()
@@ -47,7 +46,8 @@ class GamePage extends Component {
   };
 
   componentDidMount = () => {
-    this.props.thunkCreaterGetModes();
+    const { thunkCreaterGetModes } = this.props;
+    thunkCreaterGetModes();
     this.createItemPropertiesArr();
   };
 
@@ -87,8 +87,9 @@ class GamePage extends Component {
         })
       
     }
-    
     if (!gameOver) {
+    this.setState({startGame: true})    
+
         const delay = this.getDelay(selectValue);
         const len = Math.pow(+selectValue, 2);
         this.getRandomArr(len);
@@ -161,6 +162,7 @@ class GamePage extends Component {
    gameOver && this.setState({
         gameOver: gameOver,
         winner: winner,
+        startGame: false,
       });
   };
 
@@ -205,7 +207,6 @@ class GamePage extends Component {
   selectedComputer = () => {
     const { propertiesItemArr, selectValue, gameOver, inputName, winner } = this.state;
     const { thunkCreaterPostWinner } = this.props;
-    
     this.stopGame();
     
     if (gameOver) {
@@ -276,8 +277,6 @@ class GamePage extends Component {
               isSelected={this.isSelectedChecker}
               isComputerSelected={this.isComputerSelectedChecker}
               selectedUser={this.selectedUser}
-              startGameSelect={this.selectedCell}
-              timerStart={this.timerStart}
               winnerMassage={winnerMassage}
               buttonValue={buttonValue}
             />

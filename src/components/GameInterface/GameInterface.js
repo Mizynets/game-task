@@ -17,12 +17,10 @@ class GameInterface extends Component {
       isSelected,
       isComputerSelected,
       selectedUser,
-      startGameSelect,
-      timerStart,
       winnerMassage,
       buttonValue
     } = this.props;
-
+    const disabledBtn = (!(selectValue.length > 0 && inputName.trim().length > 0)) || (!(!(selectValue.length > 0 && inputName.trim().length > 0)) && startGame);
     return (
       <div className={s.gameInterface}>
         <div className={s.actionBlock}>
@@ -44,7 +42,7 @@ class GameInterface extends Component {
             onChange={handleChangeInputName}
           />
           <button
-            disabled={!(selectValue.length > 0 && inputName.trim().length > 0)}
+            disabled={disabledBtn}
             className={s.btn}
             onClick={onHandlePlay}
           >
@@ -60,13 +58,10 @@ class GameInterface extends Component {
           <FieldList
             propertiesList={propertiesList}
             selectValue={selectValue}
-            playGame={startGame}
             isUserSelected={isUserSelected}
             isSelected={isSelected}
             isComputerSelected={isComputerSelected}
             selectedUser={selectedUser}
-            startGameSelect={startGameSelect}
-            timerStart={timerStart}
           />
         </div>
       </div>

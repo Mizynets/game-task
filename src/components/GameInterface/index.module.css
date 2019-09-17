@@ -45,8 +45,17 @@ color: #fff;
 border: none;
 border-radius: 3px;
 outline: none;
+user-select: none;
 cursor: pointer;
 }
+
+.btn:hover{
+background: rgb(95, 109, 113);
+}
+.btn:active{
+    background: rgb(142, 172, 181);
+    }
+    
 
 .btn:disabled {
     opacity: 0.4;
