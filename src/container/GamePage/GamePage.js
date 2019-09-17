@@ -292,6 +292,7 @@ class GamePage extends Component {
   }
 }
 
+
 const mapStateToProps = ({ loading, gameMode }) => {
   return {
     loading,
