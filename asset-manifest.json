@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/game-task/static/css/main.fb7be0b6.chunk.css",
+    "main.js": "/game-task/static/js/main.5cd0437f.chunk.js",
+    "main.js.map": "/game-task/static/js/main.5cd0437f.chunk.js.map",
+    "runtime~main.js": "/game-task/static/js/runtime~main.cf3c792a.js",
+    "runtime~main.js.map": "/game-task/static/js/runtime~main.cf3c792a.js.map",
+    "static/js/2.4eda28d4.chunk.js": "/game-task/static/js/2.4eda28d4.chunk.js",
+    "static/js/2.4eda28d4.chunk.js.map": "/game-task/static/js/2.4eda28d4.chunk.js.map",
+    "index.html": "/game-task/index.html",
+    "precache-manifest.82b6d9378a19fdcf2a693c0348483069.js": "/game-task/precache-manifest.82b6d9378a19fdcf2a693c0348483069.js",
+    "service-worker.js": "/game-task/service-worker.js",
+    "static/css/main.fb7be0b6.chunk.css.map": "/game-task/static/css/main.fb7be0b6.chunk.css.map"
+  }
+}
