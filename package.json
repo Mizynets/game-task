@@ -2,7 +2,7 @@
   "name": "game-task",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://mizunets.github.io/game-task",
+  "homepage": "http://mizynets.github.io/game-task/",
   "dependencies": {
     "axios": "^0.19.0",
     "gh-pages": "^2.1.1",
